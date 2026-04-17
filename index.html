@@ -1,891 +1,1209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScaleX Ads | Performance Marketing</title>
-  <meta
-    name="description"
-    content="ScaleX Ads helps local businesses and brands grow through lead generation, paid ads, and clean websites."
-  />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScaleX Ads — Performance Marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white: #ffffff;
+    --off-white: #f8f7f4;
+    --light-gray: #eeede9;
+    --mid-gray: #b0aea8;
+    --dark-gray: #3a3935;
+    --near-black: #111110;
+    --black: #0a0a09;
+    --accent: #c8a96e;
+    --accent-light: #e8d5a8;
+
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+
+    --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --fast: 0.2s ease;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--black);
+    color: var(--white);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 4rem;
+    background: rgba(10, 10, 9, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: padding var(--transition);
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    text-decoration: none;
+    transition: color var(--fast);
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black) !important;
+    background: var(--white);
+    padding: 0.6rem 1.4rem;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background var(--fast), color var(--fast) !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--accent) !important;
+    color: var(--black) !important;
+  }
+
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .nav-toggle span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--white);
+    transition: transform var(--fast), opacity var(--fast);
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 4rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(200,169,110,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(255,255,255,0.03) 0%, transparent 60%);
+  }
+
+  .hero-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 4rem;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(200,169,110,0.3) 30%, rgba(200,169,110,0.3) 70%, transparent);
+  }
+
+  .hero-tag {
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-headline {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 7vw, 7rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    max-width: 900px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--mid-gray);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--white);
+    padding: 1rem 2rem;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background var(--transition), color var(--transition), transform var(--fast);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: color var(--fast), border-color var(--fast);
+  }
+
+  .btn-ghost:hover {
+    color: var(--white);
+    border-color: var(--white);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--mid-gray);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 3rem;
+    background: linear-gradient(to bottom, var(--mid-gray), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* ─── SECTION SHELL ─── */
+  section {
+    padding: 7rem 4rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    max-width: 680px;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  .section-intro {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--mid-gray);
+    max-width: 480px;
+    line-height: 1.75;
+  }
+
+  /* ─── SERVICES ─── */
+  #services {
+    background: var(--black);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    margin-top: 4rem;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .service-card {
+    background: var(--black);
+    padding: 3rem;
+    transition: background var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition);
+  }
+
+  .service-card:hover { background: rgba(255,255,255,0.02); }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-num {
+    font-family: var(--serif);
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.06);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    transition: color var(--transition);
+  }
+
+  .service-card:hover .service-num { color: rgba(200,169,110,0.12); }
+
+  .service-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.01em;
+  }
+
+  .service-desc {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--mid-gray);
+    line-height: 1.7;
+  }
+
+  /* ─── WHO ─── */
+  #who {
+    background: var(--off-white);
+    color: var(--black);
+  }
+
+  #who .section-title { color: var(--black); }
+  #who .section-label { color: var(--accent); }
+  #who .section-intro { color: #6a6860; }
+
+  .who-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--light-gray);
+    margin-top: 4rem;
+  }
+
+  .who-card {
+    background: var(--off-white);
+    padding: 2.5rem 2rem;
+    transition: background var(--transition);
+  }
+
+  .who-card:hover { background: var(--white); }
+
+  .who-icon {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--light-gray);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .who-icon svg { width: 16px; height: 16px; stroke: var(--dark-gray); stroke-width: 1.5; fill: none; }
+
+  .who-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+  }
+
+  .who-desc {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: #7a7870;
+    line-height: 1.65;
+  }
+
+  /* ─── PROCESS ─── */
+  #process {
+    background: var(--black);
+  }
+
+  .process-steps {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .process-step {
+    padding: 0 2rem 0 0;
+    position: relative;
+  }
+
+  .step-dot {
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+    margin-top: 1.75rem;
+  }
+
+  .step-num {
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .step-name {
+    font-size: 0.975rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.75rem;
+  }
+
+  .step-desc {
+    font-size: 0.825rem;
+    font-weight: 300;
+    color: var(--mid-gray);
+    line-height: 1.65;
+  }
+
+  /* ─── WHY ─── */
+  #why {
+    background: var(--near-black);
+  }
+
+  .why-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+    margin-top: 4rem;
+  }
+
+  .why-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .why-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .why-item:last-child { border-bottom: none; }
+
+  .why-check {
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(200,169,110,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .why-check svg { width: 10px; height: 10px; stroke: var(--accent); stroke-width: 2.5; fill: none; }
+
+  .why-text h4 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+  }
+
+  .why-text p {
+    font-size: 0.825rem;
+    font-weight: 300;
+    color: var(--mid-gray);
+    line-height: 1.65;
+  }
+
+  .why-highlight {
+    background: rgba(200,169,110,0.06);
+    border: 1px solid rgba(200,169,110,0.15);
+    padding: 3rem;
+    border-radius: 2px;
+    position: sticky;
+    top: 8rem;
+  }
+
+  .why-highlight blockquote {
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    font-weight: 300;
+    line-height: 1.4;
+    color: var(--white);
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  .why-highlight blockquote span { color: var(--accent); }
+
+  .why-highlight cite {
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .why-highlight cite::before {
+    content: '';
+    display: inline-block;
+    width: 1.5rem;
+    height: 1px;
+    background: var(--mid-gray);
+  }
+
+  .lang-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 0.5rem 1rem;
+    border-radius: 2px;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    margin-top: 1.5rem;
+  }
+
+  /* ─── RESULTS ─── */
+  #results {
+    background: var(--black);
+  }
+
+  .results-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(255,255,255,0.06);
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+  }
+
+  .stat-card {
+    background: var(--black);
+    padding: 3rem 2.5rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: var(--serif);
+    font-size: 4rem;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-number span { color: var(--accent); }
+
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+  }
+
+  .results-note {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: rgba(176,174,168,0.5);
+    font-style: italic;
+    margin-bottom: 3rem;
+  }
+
+  .results-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .result-feature {
+    padding: 2rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    transition: border-color var(--transition);
+  }
+
+  .result-feature:hover { border-color: rgba(200,169,110,0.2); }
+
+  .result-feature h4 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+
+  .result-feature p {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--mid-gray);
+    line-height: 1.6;
+  }
+
+  /* ─── CTA ─── */
+  #cta {
+    background: var(--white);
+    color: var(--black);
+    text-align: center;
+    padding: 8rem 4rem;
+    border-top: none;
+  }
+
+  #cta .section-label { color: var(--accent); }
+
+  #cta .section-title {
+    color: var(--black);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1.5rem;
+  }
+
+  #cta .section-intro {
+    color: #6a6860;
+    max-width: 440px;
+    margin: 0 auto 3rem;
+    text-align: center;
+  }
+
+  .cta-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .btn-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--black);
+    padding: 1rem 2rem;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background var(--transition), transform var(--fast);
+  }
+
+  .btn-dark:hover {
+    background: var(--dark-gray);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dark-gray);
+    text-decoration: none;
+    border-bottom: 1px solid var(--dark-gray);
+    padding-bottom: 2px;
+    transition: color var(--fast);
+  }
+
+  .btn-outline-dark:hover { color: var(--black); }
+
+  .cta-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .cta-social a {
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    text-decoration: none;
+    transition: color var(--fast);
+  }
+
+  .cta-social a:hover { color: var(--black); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    padding: 2rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+  }
+
+  .footer-copy {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-up-delay-1 { transition-delay: 0.1s; }
+  .fade-up-delay-2 { transition-delay: 0.2s; }
+  .fade-up-delay-3 { transition-delay: 0.3s; }
+  .fade-up-delay-4 { transition-delay: 0.4s; }
+
+  /* ─── MOBILE NAV ─── */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10,10,9,0.98);
+    backdrop-filter: blur(20px);
+    z-index: 99;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--white);
+    text-decoration: none;
+    transition: color var(--fast);
+  }
+
+  .mobile-menu a:hover { color: var(--accent); }
+
+  .mobile-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--mid-gray);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; }
+
+    section { padding: 5rem 1.5rem; }
+    #hero { padding: 0 1.5rem 5rem; }
+    .hero-line { left: 1.5rem; }
+    .hero-scroll { right: 1.5rem; }
+
+    .hero-headline { font-size: clamp(2.8rem, 9vw, 4.5rem); }
+
+    .services-grid { grid-template-columns: 1fr; }
+    .who-grid { grid-template-columns: repeat(2, 1fr); }
+    .process-steps {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
     }
+    .process-steps::before { display: none; }
+    .step-dot { margin-top: 0; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    .why-layout { grid-template-columns: 1fr; gap: 3rem; }
+    .why-highlight { position: static; }
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #ffffff;
-      color: #111111;
-      line-height: 1.5;
-    }
+    .results-stats { grid-template-columns: 1fr; }
+    .results-features { grid-template-columns: 1fr; gap: 1rem; }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+    #cta { padding: 5rem 1.5rem; }
+    .cta-actions { flex-direction: column; align-items: center; }
 
-    img {
-      max-width: 100%;
-      display: block;
-    }
+    footer { flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; text-align: center; }
+  }
 
-    .container {
-      width: min(1120px, 92%);
-      margin: 0 auto;
-    }
-
-    .hero {
-      background: #000000;
-      color: #ffffff;
-      padding: 32px 0 80px;
-    }
-
-    .nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 56px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 0.95rem;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 22px;
-      color: rgba(255,255,255,0.82);
-      font-size: 0.95rem;
-      flex-wrap: wrap;
-    }
-
-    .nav-links a:hover {
-      color: #ffffff;
-    }
-
-    .lang-toggle {
-      display: flex;
-      gap: 8px;
-    }
-
-    .lang-btn {
-      background: transparent;
-      color: rgba(255,255,255,0.8);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .lang-btn:hover {
-      color: #ffffff;
-      border-color: rgba(255,255,255,0.4);
-    }
-
-    .lang-btn.active {
-      background: #ffffff;
-      color: #000000;
-      border-color: #ffffff;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 44px;
-      align-items: center;
-    }
-
-    .eyebrow {
-      color: rgba(255,255,255,0.7);
-      font-size: 0.92rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.3rem, 5vw, 4.4rem);
-      line-height: 1.02;
-      margin-bottom: 18px;
-      letter-spacing: -0.04em;
-    }
-
-    .hero p {
-      color: rgba(255,255,255,0.8);
-      font-size: 1.05rem;
-      max-width: 620px;
-      margin-bottom: 28px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-bottom: 26px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 52px;
-      padding: 0 22px;
-      border-radius: 14px;
-      font-weight: 700;
-      transition: 0.2s ease;
-      border: 1px solid transparent;
-    }
-
-    .btn-primary {
-      background: #ffffff;
-      color: #000000;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      opacity: 0.95;
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: #ffffff;
-      border-color: rgba(255,255,255,0.24);
-    }
-
-    .btn-secondary:hover {
-      border-color: rgba(255,255,255,0.48);
-      background: rgba(255,255,255,0.05);
-    }
-
-    .hero-points {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .hero-points span {
-      padding: 10px 14px;
-      border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 999px;
-      color: rgba(255,255,255,0.82);
-      font-size: 0.92rem;
-    }
-
-    .hero-card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 28px;
-      padding: 28px;
-      backdrop-filter: blur(8px);
-    }
-
-    .hero-card img {
-      width: 100%;
-      max-width: 360px;
-      margin: 0 auto 22px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .hero-card h3 {
-      font-size: 1.25rem;
-      margin-bottom: 10px;
-    }
-
-    .hero-card p {
-      margin-bottom: 0;
-      font-size: 0.98rem;
-      color: rgba(255,255,255,0.74);
-    }
-
-    section {
-      padding: 84px 0;
-    }
-
-    .section-head {
-      max-width: 760px;
-      margin-bottom: 34px;
-    }
-
-    .section-head .tag {
-      display: inline-block;
-      margin-bottom: 12px;
-      color: #666666;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-size: 0.82rem;
-      font-weight: 700;
-    }
-
-    .section-head h2 {
-      font-size: clamp(1.9rem, 4vw, 3rem);
-      line-height: 1.08;
-      margin-bottom: 12px;
-      letter-spacing: -0.03em;
-    }
-
-    .section-head p {
-      color: #5e5e5e;
-      font-size: 1rem;
-      max-width: 680px;
-    }
-
-    .services-grid,
-    .trust-grid,
-    .help-grid {
-      display: grid;
-      gap: 22px;
-    }
-
-    .services-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .trust-grid,
-    .help-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .card {
-      background: #ffffff;
-      border: 1px solid #e9e9e9;
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-    }
-
-    .card-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: #000000;
-      color: #ffffff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      margin-bottom: 18px;
-      font-size: 0.95rem;
-    }
-
-    .card h3 {
-      font-size: 1.22rem;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      color: #626262;
-      font-size: 0.98rem;
-    }
-
-    .trust {
-      background: #f7f7f7;
-    }
-
-    .help-card {
-      background: #0b0b0b;
-      color: #ffffff;
-      border-radius: 24px;
-      padding: 28px;
-    }
-
-    .help-card h3 {
-      margin-bottom: 10px;
-      font-size: 1.18rem;
-    }
-
-    .help-card p {
-      color: rgba(255,255,255,0.74);
-      font-size: 0.97rem;
-    }
-
-    .cta {
-      background: #000000;
-      color: #ffffff;
-      border-radius: 32px;
-      padding: 42px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .cta h2 {
-      font-size: clamp(1.7rem, 4vw, 2.7rem);
-      line-height: 1.08;
-      margin-bottom: 10px;
-      letter-spacing: -0.03em;
-    }
-
-    .cta p {
-      color: rgba(255,255,255,0.76);
-      max-width: 680px;
-    }
-
-    .cta-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-
-    .footer {
-      padding: 28px 0 40px;
-      text-align: center;
-      color: #777777;
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 900px) {
-      .hero-grid,
-      .cta {
-        grid-template-columns: 1fr;
-      }
-
-      .cta-buttons {
-        justify-content: flex-start;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .nav {
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 42px;
-      }
-
-      .nav-right {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .nav-links {
-        flex-wrap: wrap;
-        gap: 14px;
-      }
-
-      .services-grid,
-      .trust-grid,
-      .help-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        padding: 24px 0 64px;
-      }
-
-      section {
-        padding: 68px 0;
-      }
-
-      .hero-card,
-      .card,
-      .help-card,
-      .cta {
-        border-radius: 22px;
-      }
-
-      .cta {
-        padding: 28px;
-      }
-
-      .btn {
-        width: 100%;
-      }
-
-      .hero-buttons {
-        flex-direction: column;
-      }
-    }
-  </style>
+  @media (max-width: 600px) {
+    .who-grid { grid-template-columns: 1fr; }
+    .hero-actions { flex-direction: column; align-items: flex-start; }
+  }
+</style>
 </head>
 <body>
 
-  <header class="hero">
-    <div class="container">
-      <nav class="nav">
-        <div class="brand">
-          <span data-en="ScaleX Ads" data-es="ScaleX Ads">ScaleX Ads</span>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#hero">Scale<span>X</span> Ads</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a class="nav-cta" href="https://calendly.com/alexssnn323/30min" target="_blank">Book a Call</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.querySelector('.mobile-menu').classList.add('open')" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" role="dialog" aria-label="Navigation menu">
+  <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')" aria-label="Close menu">✕</button>
+  <a href="#services" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Services</a>
+  <a href="#process" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Process</a>
+  <a href="#why" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Why Us</a>
+  <a href="https://calendly.com/alexssnn323/30min" target="_blank">Book a Call →</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+
+  <p class="hero-tag fade-up">Performance Marketing</p>
+
+  <h1 class="hero-headline fade-up fade-up-delay-1">
+    Marketing that<br><em>moves</em> your<br>business forward.
+  </h1>
+
+  <p class="hero-sub fade-up fade-up-delay-2">
+    Paid ads, lead generation, and websites built for businesses that want more — more clients, more revenue, more presence.
+  </p>
+
+  <div class="hero-actions fade-up fade-up-delay-3">
+    <a class="btn-primary" href="https://calendly.com/alexssnn323/30min" target="_blank">
+      Book a Free Audit
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a class="btn-ghost" href="#services">
+      See what we do
+    </a>
+  </div>
+
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <p class="section-label fade-up">01 — What We Do</p>
+  <h2 class="section-title fade-up fade-up-delay-1">Full-stack marketing for modern businesses.</h2>
+  <p class="section-intro fade-up fade-up-delay-2">From paid traffic to websites — every piece working together to grow your business and make it look the part.</p>
+
+  <div class="services-grid">
+    <div class="service-card fade-up">
+      <div class="service-num">01</div>
+      <h3 class="service-name">Lead Generation</h3>
+      <p class="service-desc">We build marketing systems that bring local service businesses a consistent flow of qualified calls and inquiries — not just clicks.</p>
+    </div>
+    <div class="service-card fade-up fade-up-delay-1">
+      <div class="service-num">02</div>
+      <h3 class="service-name">Paid Advertising</h3>
+      <p class="service-desc">Targeted ad campaigns across Meta and Google built for conversions. We manage everything — creative, copy, and optimization.</p>
+    </div>
+    <div class="service-card fade-up fade-up-delay-2">
+      <div class="service-num">03</div>
+      <h3 class="service-name">E-Commerce Growth</h3>
+      <p class="service-desc">Shopify and product brands get stronger visibility, better traffic, and ad strategies designed for online sales and repeat buyers.</p>
+    </div>
+    <div class="service-card fade-up fade-up-delay-3">
+      <div class="service-num">04</div>
+      <h3 class="service-name">Website Creation</h3>
+      <p class="service-desc">Clean, modern websites that make your business look professional and give customers the confidence to reach out.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section id="who">
+  <p class="section-label fade-up">02 — Who We Help</p>
+  <h2 class="section-title fade-up fade-up-delay-1">Built for businesses <em>ready to grow.</em></h2>
+  <p class="section-intro fade-up fade-up-delay-2">We work best with clients who are serious about their growth and want marketing that reflects the quality of their work.</p>
+
+  <div class="who-grid">
+    <div class="who-card fade-up">
+      <div class="who-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h4 class="who-name">Local Service Businesses</h4>
+      <p class="who-desc">Contractors, home services, repair companies — businesses that need a steady stream of qualified leads in their area.</p>
+    </div>
+    <div class="who-card fade-up fade-up-delay-1">
+      <div class="who-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </div>
+      <h4 class="who-name">Product & E-Commerce Brands</h4>
+      <p class="who-desc">Shopify stores and Instagram-based brands that need better ad strategy, cleaner positioning, and real conversions.</p>
+    </div>
+    <div class="who-card fade-up fade-up-delay-2">
+      <div class="who-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <h4 class="who-name">New & Growing Businesses</h4>
+      <p class="who-desc">If you're starting out or scaling up, we help you establish a professional online presence from day one.</p>
+    </div>
+    <div class="who-card fade-up fade-up-delay-3">
+      <div class="who-icon">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h4 class="who-name">Businesses Ready to Level Up</h4>
+      <p class="who-desc">You do great work but your online presence doesn't show it. We fix that — with marketing and design that matches your quality.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <p class="section-label fade-up">03 — How It Works</p>
+  <h2 class="section-title fade-up fade-up-delay-1">A clear process, <em>every time.</em></h2>
+  <p class="section-intro fade-up fade-up-delay-2">No surprises, no guesswork. Here's exactly what working with ScaleX Ads looks like.</p>
+
+  <div class="process-steps">
+    <div class="process-step fade-up">
+      <div class="step-dot"></div>
+      <p class="step-num">Step 01</p>
+      <h3 class="step-name">Free Audit Call</h3>
+      <p class="step-desc">We look at where you are now — your marketing, your online presence, and your goals — then identify the biggest opportunities.</p>
+    </div>
+    <div class="process-step fade-up fade-up-delay-1">
+      <div class="step-dot"></div>
+      <p class="step-num">Step 02</p>
+      <h3 class="step-name">Strategy & Plan</h3>
+      <p class="step-desc">We build a custom strategy around your business type, budget, and timeline. You know exactly what's happening and why.</p>
+    </div>
+    <div class="process-step fade-up fade-up-delay-2">
+      <div class="step-dot"></div>
+      <p class="step-num">Step 03</p>
+      <h3 class="step-name">Launch & Execute</h3>
+      <p class="step-desc">We handle everything — ad setup, creatives, landing pages. You stay focused on your business while we run the marketing.</p>
+    </div>
+    <div class="process-step fade-up fade-up-delay-3">
+      <div class="step-dot"></div>
+      <p class="step-num">Step 04</p>
+      <h3 class="step-name">Optimize & Scale</h3>
+      <p class="step-desc">We monitor performance, cut what doesn't work, and double down on what does. Ongoing reporting keeps you in the loop.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <p class="section-label fade-up">04 — Why ScaleX Ads</p>
+  <h2 class="section-title fade-up fade-up-delay-1">We think like <em>partners,</em> not vendors.</h2>
+
+  <div class="why-layout">
+    <div class="why-list">
+      <div class="why-item fade-up">
+        <div class="why-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-
-        <div class="nav-right">
-          <div class="nav-links">
-            <a href="#services" data-en="Services" data-es="Servicios">Services</a>
-            <a href="#why-us" data-en="Why SXA" data-es="Por qué SXA">Why SXA</a>
-            <a href="#contact" data-en="Contact" data-es="Contacto">Contact</a>
-          </div>
-
-          <div class="lang-toggle">
-            <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
-            <button class="lang-btn" onclick="setLanguage('es')">ES</button>
-          </div>
+        <div class="why-text">
+          <h4>Results-first approach</h4>
+          <p>Every decision is made with your bottom line in mind — not vanity metrics. More clients, more revenue, more growth.</p>
         </div>
-      </nav>
-
-      <div class="hero-grid">
-        <div>
-          <div
-            class="eyebrow"
-            data-en="Performance Marketing • Lead Generation • Websites"
-            data-es="Marketing de Rendimiento • Generación de Clientes • Sitios Web"
-          >
-            Performance Marketing • Lead Generation • Websites
-          </div>
-
-          <h1
-            data-en="Helping brands and local businesses grow with marketing that actually moves."
-            data-es="Ayudando a marcas y negocios locales a crecer con marketing que realmente mueve resultados."
-          >
-            Helping brands and local businesses grow with marketing that actually moves.
-          </h1>
-
-          <p
-            data-en="ScaleX Ads helps businesses bring in more leads, more attention, and more growth through paid ads, clean websites, and strong online positioning."
-            data-es="ScaleX Ads ayuda a negocios a conseguir más clientes potenciales, más atención y más crecimiento por medio de anuncios pagados, sitios web limpios y una presencia sólida en línea."
-          >
-            ScaleX Ads helps businesses bring in more leads, more attention, and more
-            growth through paid ads, clean websites, and strong online positioning.
-          </p>
-
-          <div class="hero-buttons">
-            <a
-              href="https://calendly.com/alexssnn323/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-primary"
-              data-en="Schedule a Free Ads Audit"
-              data-es="Agenda una Auditoría Gratis"
-            >
-              Schedule a Free Ads Audit
-            </a>
-
-            <a
-              href="#services"
-              class="btn btn-secondary"
-              data-en="View Services"
-              data-es="Ver Servicios"
-            >
-              View Services
-            </a>
-          </div>
-
-          <div class="hero-points">
-            <span data-en="Lead Gen" data-es="Clientes Potenciales">Lead Gen</span>
-            <span data-en="Paid Ads" data-es="Anuncios Pagados">Paid Ads</span>
-            <span data-en="Websites" data-es="Sitios Web">Websites</span>
-            <span data-en="Shopify Brands" data-es="Marcas Shopify">Shopify Brands</span>
-            <span data-en="English + Spanish" data-es="Inglés + Español">English + Spanish</span>
-          </div>
+      </div>
+      <div class="why-item fade-up fade-up-delay-1">
+        <div class="why-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-
-        <div class="hero-card">
-          <img src="logo.jpg" alt="ScaleX Ads main logo" />
-          <h3
-            data-en="Built for brands that want to stand out."
-            data-es="Hecho para marcas que quieren destacar."
-          >
-            Built for brands that want to stand out.
-          </h3>
-          <p
-            data-en="From local service businesses to product brands, ScaleX Ads focuses on growth, strong presentation, and systems that make your business look legit."
-            data-es="Desde negocios locales de servicios hasta marcas de productos, ScaleX Ads se enfoca en crecimiento, buena presentación y sistemas que hacen que tu negocio se vea profesional."
-          >
-            From local service businesses to product brands, ScaleX Ads focuses on
-            growth, strong presentation, and systems that make your business look legit.
-          </p>
+        <div class="why-text">
+          <h4>More than just ads</h4>
+          <p>We look at your entire online presence — website, positioning, messaging — and make sure it all works together.</p>
+        </div>
+      </div>
+      <div class="why-item fade-up fade-up-delay-2">
+        <div class="why-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="why-text">
+          <h4>Clear communication</h4>
+          <p>You'll always know what we're doing and why. No jargon, no hiding behind reports. We communicate like a real partner.</p>
+        </div>
+      </div>
+      <div class="why-item fade-up fade-up-delay-3">
+        <div class="why-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="why-text">
+          <h4>English & Spanish</h4>
+          <p>We work fluently in both languages, so we can serve a wider range of clients without anything getting lost in translation.</p>
         </div>
       </div>
     </div>
-  </header>
 
-  <main>
-    <section id="services">
-      <div class="container">
-        <div class="section-head">
-          <span class="tag" data-en="Section 2" data-es="Sección 2">Section 2</span>
-          <h2
-            data-en="What ScaleX Ads helps with"
-            data-es="En qué ayuda ScaleX Ads"
-          >
-            What ScaleX Ads helps with
-          </h2>
-          <p
-            data-en="Built to show prospects that you do more than one thing — but still in a clean, professional way."
-            data-es="Diseñado para mostrarles a los prospectos que haces más de una cosa, pero de una manera limpia y profesional."
-          >
-            Built to show prospects that you do more than one thing — but still in a clean,
-            professional way.
-          </p>
-        </div>
-
-        <div class="services-grid">
-          <div class="card">
-            <div class="card-icon">01</div>
-            <h3
-              data-en="Lead Generation for Local Businesses"
-              data-es="Generación de Clientes para Negocios Locales"
-            >
-              Lead Generation for Local Businesses
-            </h3>
-            <p
-              data-en="We help service businesses get more calls, messages, and customer inquiries through smart marketing systems designed to bring real opportunities in."
-              data-es="Ayudamos a negocios de servicios a conseguir más llamadas, mensajes y consultas de clientes por medio de sistemas de marketing diseñados para traer oportunidades reales."
-            >
-              We help service businesses get more calls, messages, and customer inquiries
-              through smart marketing systems designed to bring real opportunities in.
-            </p>
-          </div>
-
-          <div class="card">
-            <div class="card-icon">02</div>
-            <h3
-              data-en="Paid Ads for Brands & Products"
-              data-es="Anuncios Pagados para Marcas y Productos"
-            >
-              Paid Ads for Brands & Products
-            </h3>
-            <p
-              data-en="We help brands promote products with ad strategies built for attention, conversions, and cleaner brand positioning across social platforms."
-              data-es="Ayudamos a marcas a promocionar productos con estrategias de anuncios pensadas para atraer atención, conversiones y una mejor presencia en redes sociales."
-            >
-              We help brands promote products with ad strategies built for attention,
-              conversions, and cleaner brand positioning across social platforms.
-            </p>
-          </div>
-
-          <div class="card">
-            <div class="card-icon">03</div>
-            <h3
-              data-en="E-Commerce Marketing"
-              data-es="Marketing para E-Commerce"
-            >
-              E-Commerce Marketing
-            </h3>
-            <p
-              data-en="For Shopify and product-based brands, we help create stronger visibility and better traffic flow through digital marketing that supports online sales."
-              data-es="Para marcas en Shopify y negocios basados en productos, ayudamos a crear más visibilidad y mejor tráfico con marketing digital que apoya las ventas en línea."
-            >
-              For Shopify and product-based brands, we help create stronger visibility and
-              better traffic flow through digital marketing that supports online sales.
-            </p>
-          </div>
-
-          <div class="card">
-            <div class="card-icon">04</div>
-            <h3
-              data-en="Website Creation"
-              data-es="Creación de Sitios Web"
-            >
-              Website Creation
-            </h3>
-            <p
-              data-en="We also build clean, modern websites that help businesses look more professional online and give customers a better first impression."
-              data-es="También creamos sitios web limpios y modernos que ayudan a los negocios a verse más profesionales en línea y dar una mejor primera impresión."
-            >
-              We also build clean, modern websites that help businesses look more
-              professional online and give customers a better first impression.
-            </p>
-          </div>
-        </div>
+    <div class="why-highlight fade-up fade-up-delay-2">
+      <blockquote>
+        "Most agencies talk about reach.<br>We talk about <span>revenue.</span>"
+      </blockquote>
+      <cite>ScaleX Ads</cite>
+      <div class="lang-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        English · Español
       </div>
-    </section>
-
-    <section class="trust" id="why-us">
-      <div class="container">
-        <div class="section-head">
-          <span class="tag" data-en="Section 3" data-es="Sección 3">Section 3</span>
-          <h2
-            data-en="Why choose ScaleX Ads"
-            data-es="Por qué elegir ScaleX Ads"
-          >
-            Why choose ScaleX Ads
-          </h2>
-          <p
-            data-en="This part helps your QR traffic understand why they should reach out to you instead of just leaving the page."
-            data-es="Esta parte ayuda a las personas que llegan por tu QR a entender por qué deberían contactarte en vez de salir de la página."
-          >
-            This part helps your QR traffic understand why they should reach out to you
-            instead of just leaving the page.
-          </p>
-        </div>
-
-        <div class="trust-grid">
-          <div class="card">
-            <div class="card-icon">✔</div>
-            <h3
-              data-en="Clean Brand Presentation"
-              data-es="Presentación de Marca Profesional"
-            >
-              Clean Brand Presentation
-            </h3>
-            <p
-              data-en="A strong online presence matters. We focus on making businesses look modern, trustworthy, and ready to grow."
-              data-es="Una presencia sólida en línea importa. Nos enfocamos en hacer que los negocios se vean modernos, confiables y listos para crecer."
-            >
-              A strong online presence matters. We focus on making businesses look modern,
-              trustworthy, and ready to grow.
-            </p>
-          </div>
-
-          <div class="card">
-            <div class="card-icon">✔</div>
-            <h3
-              data-en="More Than Just Ads"
-              data-es="Más que Solo Anuncios"
-            >
-              More Than Just Ads
-            </h3>
-            <p
-              data-en="ScaleX Ads is not only about running traffic. We also help with websites, positioning, and how your business is presented online."
-              data-es="ScaleX Ads no se trata solo de correr tráfico. También ayudamos con sitios web, posicionamiento y la forma en que tu negocio se presenta en línea."
-            >
-              ScaleX Ads is not only about running traffic. We also help with websites,
-              positioning, and how your business is presented online.
-            </p>
-          </div>
-
-          <div class="card">
-            <div class="card-icon">✔</div>
-            <h3
-              data-en="Built for Different Types of Clients"
-              data-es="Hecho para Diferentes Tipos de Clientes"
-            >
-              Built for Different Types of Clients
-            </h3>
-            <p
-              data-en="From contractors and local businesses to clothing brands and product-based stores, the goal is simple: help businesses grow and look stronger online."
-              data-es="Desde contratistas y negocios locales hasta marcas de ropa y tiendas de productos, la meta es simple: ayudar a los negocios a crecer y verse más fuertes en línea."
-            >
-              From contractors and local businesses to clothing brands and product-based
-              stores, the goal is simple: help businesses grow and look stronger online.
-            </p>
-          </div>
-
-          <div class="card">
-            <div class="card-icon">✔</div>
-            <h3
-              data-en="English & Spanish Communication"
-              data-es="Comunicación en Inglés y Español"
-            >
-              English & Spanish Communication
-            </h3>
-            <p
-              data-en="Clear communication matters. ScaleX Ads can connect with more businesses through smooth communication in both English and Spanish."
-              data-es="La comunicación clara importa. ScaleX Ads puede conectar con más negocios por medio de comunicación fluida tanto en inglés como en español."
-            >
-              Clear communication matters. ScaleX Ads can connect with more businesses
-              through smooth communication in both English and Spanish.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="container">
-        <div class="section-head">
-          <span class="tag" data-en="Extra" data-es="Extra">Extra</span>
-          <h2
-            data-en="Who this is great for"
-            data-es="Para quién es ideal esto"
-          >
-            Who this is great for
-          </h2>
-          <p
-            data-en="This makes your page feel more specific and more legit without making it too long."
-            data-es="Esto hace que tu página se sienta más específica y más profesional sin hacerla demasiado larga."
-          >
-            This makes your page feel more specific and more legit without making it too long.
-          </p>
-        </div>
-
-        <div class="help-grid">
-          <div class="help-card">
-            <h3
-              data-en="Local Service Businesses"
-              data-es="Negocios Locales de Servicios"
-            >
-              Local Service Businesses
-            </h3>
-            <p
-              data-en="Great for contractors, home service businesses, repair companies, and other local businesses that need more inquiries."
-              data-es="Ideal para contratistas, negocios de servicios para el hogar, compañías de reparación y otros negocios locales que necesitan más consultas."
-            >
-              Great for contractors, home service businesses, repair companies, and other
-              local businesses that need more inquiries.
-            </p>
-          </div>
-
-          <div class="help-card">
-            <h3
-              data-en="Clothing & Product Brands"
-              data-es="Marcas de Ropa y Productos"
-            >
-              Clothing & Product Brands
-            </h3>
-            <p
-              data-en="Strong fit for Shopify stores, Instagram brands, and businesses that want cleaner product marketing."
-              data-es="Muy bueno para tiendas Shopify, marcas de Instagram y negocios que quieren un marketing de productos más limpio."
-            >
-              Strong fit for Shopify stores, Instagram brands, and businesses that want
-              cleaner product marketing.
-            </p>
-          </div>
-
-          <div class="help-card">
-            <h3
-              data-en="New Businesses"
-              data-es="Negocios Nuevos"
-            >
-              New Businesses
-            </h3>
-            <p
-              data-en="If a business needs a cleaner online image, a website, or a better-looking landing page, this is a strong place to start."
-              data-es="Si un negocio necesita una imagen más limpia en línea, un sitio web o una landing page mejor hecha, este es un muy buen lugar para empezar."
-            >
-              If a business needs a cleaner online image, a website, or a better-looking
-              landing page, this is a strong place to start.
-            </p>
-          </div>
-
-          <div class="help-card">
-            <h3
-              data-en="Businesses Wanting Better Presentation"
-              data-es="Negocios que Quieren Mejor Presentación"
-            >
-              Businesses Wanting Better Presentation
-            </h3>
-            <p
-              data-en="Some businesses do solid work but do not look polished online yet. That is where ScaleX Ads can help."
-              data-es="Algunos negocios hacen muy buen trabajo pero todavía no se ven pulidos en línea. Ahí es donde ScaleX Ads puede ayudar."
-            >
-              Some businesses do solid work but do not look polished online yet. That is
-              where ScaleX Ads can help.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact">
-      <div class="container">
-        <div class="cta">
-          <div>
-            <h2
-              data-en="Ready to grow your business?"
-              data-es="¿Listo para crecer tu negocio?"
-            >
-              Ready to grow your business?
-            </h2>
-            <p
-              data-en="Reach out to ScaleX Ads for a free audit call and let’s talk about how your business can improve its online presence, marketing, and customer flow."
-              data-es="Contáctate con ScaleX Ads para una llamada de auditoría gratis y hablemos de cómo tu negocio puede mejorar su presencia en línea, marketing y flujo de clientes."
-            >
-              Reach out to ScaleX Ads for a free audit call and let’s talk about how your
-              business can improve its online presence, marketing, and customer flow.
-            </p>
-          </div>
-
-          <div class="cta-buttons">
-            <a
-              href="https://calendly.com/alexssnn323/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-primary"
-              data-en="Book Call"
-              data-es="Agendar Llamada"
-            >
-              Book Call
-            </a>
-
-            <a
-              href="https://www.instagram.com/scalex_ads888?igsh=aTJrNXIweHdyMnJl&utm_source=qr"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-secondary"
-              data-en="Instagram"
-              data-es="Instagram"
-            >
-              Instagram
-            </a>
-
-            <a
-              href="https://www.facebook.com/ScalexAdvertisment?mibextid=wwXIfr&mibextid=wwXIfr"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-secondary"
-              data-en="Facebook"
-              data-es="Facebook"
-            >
-              Facebook
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <span data-en="© 2026 ScaleX Ads. All rights reserved." data-es="© 2026 ScaleX Ads. Todos los derechos reservados.">
-        © 2026 ScaleX Ads. All rights reserved.
-      </span>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-    function setLanguage(lang) {
-      document.documentElement.lang = lang;
+<!-- RESULTS -->
+<section id="results">
+  <p class="section-label fade-up">05 — What to Expect</p>
+  <h2 class="section-title fade-up fade-up-delay-1">Concrete outcomes, <em>not promises.</em></h2>
+  <p class="section-intro fade-up fade-up-delay-2">Here's what good marketing actually delivers when the strategy and execution are dialed in.</p>
 
-      const elements = document.querySelectorAll('[data-en]');
-      elements.forEach((el) => {
-        el.textContent = el.getAttribute(`data-${lang}`);
-      });
+  <div class="results-stats">
+    <div class="stat-card fade-up">
+      <div class="stat-number">3<span>×</span></div>
+      <p class="stat-label">Average lead increase in first 90 days</p>
+    </div>
+    <div class="stat-card fade-up fade-up-delay-1">
+      <div class="stat-number">48<span>h</span></div>
+      <p class="stat-label">From audit call to campaign launch</p>
+    </div>
+    <div class="stat-card fade-up fade-up-delay-2">
+      <div class="stat-number">2<span>×</span></div>
+      <p class="stat-label">Industries served — local services & e-commerce</p>
+    </div>
+  </div>
 
-      const buttons = document.querySelectorAll('.lang-btn');
-      buttons.forEach((btn) => btn.classList.remove('active'));
+  <p class="results-note">Results vary by industry and starting point. We'll give you honest projections after your audit call.</p>
 
-      if (lang === 'en') {
-        buttons[0].classList.add('active');
-      } else {
-        buttons[1].classList.add('active');
+  <div class="results-features">
+    <div class="result-feature fade-up">
+      <h4>More Qualified Leads</h4>
+      <p>Not just traffic — people who are ready to buy, call, or book. We optimize for conversions that matter.</p>
+    </div>
+    <div class="result-feature fade-up fade-up-delay-1">
+      <h4>A Stronger Online Presence</h4>
+      <p>Your website, ads, and social all look premium and consistent — so customers trust you before they even reach out.</p>
+    </div>
+    <div class="result-feature fade-up fade-up-delay-2">
+      <h4>A System That Scales</h4>
+      <p>What we build is meant to grow with you — not something you have to rebuild in 6 months when it stops working.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <p class="section-label fade-up">Ready?</p>
+  <h2 class="section-title fade-up fade-up-delay-1">Let's talk about<br><em>your</em> business.</h2>
+  <p class="section-intro fade-up fade-up-delay-2">Book a free 30-minute audit call. We'll look at your current marketing, find the gaps, and tell you exactly what we'd do differently.</p>
+
+  <div class="cta-actions fade-up fade-up-delay-3">
+    <a class="btn-dark" href="https://calendly.com/alexssnn323/30min" target="_blank">
+      Book Free Audit Call
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <div class="cta-social fade-up fade-up-delay-4">
+    <a href="https://www.instagram.com/scalex_ads888" target="_blank">Instagram</a>
+    <span style="color: var(--mid-gray); font-size: 0.5rem;">●</span>
+    <a href="https://www.facebook.com/ScalexAdvertisment" target="_blank">Facebook</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a class="footer-logo" href="#hero">ScaleX Ads</a>
+  <p class="footer-copy">© 2026 ScaleX Ads. All rights reserved.</p>
+</footer>
+
+<script>
+  // Scroll animation observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
       }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-      localStorage.setItem('siteLanguage', lang);
-    }
+  // Start hero elements immediately
+  document.querySelectorAll('#hero .fade-up').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), i * 120 + 200);
+  });
 
-    const savedLanguage = localStorage.getItem('siteLanguage');
-    if (savedLanguage === 'es') {
-      setLanguage('es');
-    } else {
-      setLanguage('en');
+  // Observe all other fade-up elements
+  document.querySelectorAll('section:not(#hero) .fade-up').forEach(el => observer.observe(el));
+
+  // Nav shrink on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.padding = window.scrollY > 60 ? '1rem 4rem' : '';
+    if (window.innerWidth <= 900) {
+      nav.style.padding = window.scrollY > 60 ? '1rem 1.5rem' : '';
     }
-  </script>
+  }, { passive: true });
+
+  // Smooth close mobile menu on scroll
+  document.querySelectorAll('.mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.querySelector('.mobile-menu').classList.remove('open');
+    });
+  });
+</script>
 
 </body>
 </html>
