@@ -11,7 +11,7 @@
     en: english,
     es: {
       skip: 'Ir al contenido', nav_work: 'El diseño', nav_services: 'Servicios', nav_process: 'El proceso', nav_talk: 'Platiquemos', mobile_note: 'Un buen trabajo merece ser visto.',
-      hero_eyebrow: 'Ideas propias. Diseño que destaca.', hero_title: 'Hecho para<br /><em>destacar.</em>', hero_desc: 'Tú haces un gran trabajo. Nosotros creamos las páginas web y los anuncios en Meta que ayudan a que las personas indicadas lo vean.', hero_cta: 'Hagamos crecer tu presencia', hero_explore: 'Explora el diseño', hero_footnote: 'Páginas web a medida · Publicidad en Meta · English & Español',
+      hero_eyebrow: 'Ideas propias. Diseño que destaca.', hero_title: '<span>Hecho para</span><br /><em>destacar.</em>', hero_desc: 'Tú haces un gran trabajo. Nosotros creamos las páginas web y los anuncios en Meta que ayudan a que las personas indicadas lo vean.', hero_cta: 'Hagamos crecer tu presencia', hero_explore: 'Explora el diseño', hero_footnote: 'Páginas web a medida · Publicidad en Meta · English & Español',
       demo_address: 'TU NEGOCIO, REIMAGINADO', mock_eyebrow: 'HECHO PARA DURAR. DISEÑADO PARA INSPIRAR.', mock_title: 'Una primera<br /><em>impresión sólida.</em>', mock_cta: 'Explora nuestro trabajo ↗', mock_phone: 'Bien hecho.<br />Desde los<br /><em>cimientos.</em>', mock_phone_cta: 'Platiquemos ↗', hero_design_label: 'Los detalles hacen la diferencia.', hero_design_note: 'Un concepto web de ScaleX Ads', hero_art_caption: 'Diseñado con intención. Hasta el último detalle.', hero_bottom: 'PARA LOS NEGOCIOS QUE CONSTRUYEN NUESTRA COMUNIDAD.', scroll: 'Sigue explorando',
       trade_remodel: 'REMODELACIÓN', trade_concrete: 'CONCRETO', trade_landscape: 'JARDINERÍA', trade_local: 'SERVICIOS LOCALES',
       work_label: '01 / EL DISEÑO', work_title: 'Tu trabajo.<br /><em>Más a la vista.</em>', work_desc: 'Tu página debe mostrar la mejor versión de tu negocio. Explora algunas ideas que podríamos llevar a la tuya.', concept_disclosure: 'Conceptos ilustrativos de diseño · No son proyectos de clientes',
@@ -28,12 +28,15 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let userPaused = readPreference('scalex_motion') === 'paused';
   const motionButton = one('#motion-control');
+  const hero = one('.hero');
   const menu = one('#mobile-nav');
   const menuButton = one('#menu-toggle');
   const conceptDialog = one('#concept-dialog');
   const conceptFrame = one('#concept-frame');
   let currentProject = 'concrete';
   let conceptOpener = null;
+  let previewAnimation;
+  const motionAllowed = () => !userPaused && !reducedMotion.matches;
 
   function applyLanguage(nextLanguage) {
     language = nextLanguage === 'es' ? 'es' : 'en';
@@ -56,13 +59,20 @@
   }
 
   function updateMotionState() {
-    const paused = userPaused || reducedMotion.matches;
+    const paused = !motionAllowed();
     root.classList.toggle('motion-paused', paused);
     motionButton.setAttribute('aria-pressed', String(paused));
     motionButton.disabled = reducedMotion.matches;
     motionButton.setAttribute('aria-label', language === 'es' ? (paused ? 'Reanudar animaciones decorativas' : 'Pausar animaciones decorativas') : (paused ? 'Resume decorative animations' : 'Pause decorative animations'));
     motionButton.title = motionButton.getAttribute('aria-label');
-    if (paused) all('[data-tilt]').forEach(element => { element.style.removeProperty('--tilt-x'); element.style.removeProperty('--tilt-y'); });
+    if (paused) {
+      hero.classList.remove('is-entering');
+      servicePanels.classList.remove('is-switching');
+      resetTilt();
+      previewAnimation?.cancel();
+    }
+    syncConceptMotion();
+    scheduleScroll();
   }
   motionButton.addEventListener('click', () => { userPaused = !userPaused; savePreference('scalex_motion', userPaused ? 'paused' : 'on'); updateMotionState(); });
   reducedMotion.addEventListener('change', updateMotionState);
@@ -75,50 +85,87 @@
   menu.addEventListener('close', () => { menuButton.setAttribute('aria-expanded', 'false'); document.body.style.overflow = conceptDialog.open ? 'hidden' : ''; });
   window.matchMedia('(min-width: 741px)').addEventListener('change', event => { if (event.matches && menu.open) menu.close(); });
 
-  // Content is visible by default; reveal enhancement is added only after setup.
-  if ('IntersectionObserver' in window) {
+  // Below-fold content is revealed once. Keyboard focus makes it visible immediately.
+  function initReveals() {
+    if (!('IntersectionObserver' in window)) return;
+    const reveal = element => {
+      element.classList.add('is-visible');
+      observer.unobserve(element);
+    };
     const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -18px 0px' });
-    all('.reveal').forEach(element => observer.observe(element));
-    all('.hero-copy .reveal, .process-step').forEach((element, index) => element.style.setProperty('--reveal-delay', `${(index % 5) * 75}ms`));
+      entries.forEach(entry => { if (entry.isIntersecting) reveal(entry.target); });
+    }, { rootMargin: '0px 0px -16px 0px' });
+
+    all('.reveal').forEach(element => {
+      const { top, bottom } = element.getBoundingClientRect();
+      if (top < window.innerHeight && bottom > 0) reveal(element);
+      else observer.observe(element);
+    });
+    document.addEventListener('focusin', event => {
+      const element = event.target.closest('.reveal');
+      if (element) reveal(element);
+    });
     root.classList.add('js-motion');
   }
 
   let scrollFrame = 0;
+  const progress = one('.scroll-progress');
+  const header = one('#header');
   function updateScroll() {
-    const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    one('.scroll-progress').style.transform = `scaleX(${Math.min(1, Math.max(0, window.scrollY / maxScroll))})`;
-    one('#header').classList.toggle('is-scrolled', window.scrollY > 60);
+    if (motionAllowed()) {
+      const maxScroll = Math.max(1, root.scrollHeight - window.innerHeight);
+      progress.style.transform = `scaleX(${Math.min(1, Math.max(0, window.scrollY / maxScroll))})`;
+    }
+    header.classList.toggle('is-scrolled', window.scrollY > 60);
     scrollFrame = 0;
   }
   function scheduleScroll() { if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScroll); }
   window.addEventListener('scroll', scheduleScroll, { passive: true });
   window.addEventListener('resize', scheduleScroll, { passive: true });
-  document.addEventListener('visibilitychange', () => root.classList.toggle('tab-hidden', document.hidden));
-  all('[data-tilt]').forEach(stage => {
-    let pointerFrame = 0;
-    const scene = stage.closest('.hero-art');
-    stage.addEventListener('pointermove', event => {
-      if (userPaused || reducedMotion.matches || event.pointerType !== 'mouse' || window.innerWidth < 741 || pointerFrame) return;
-      pointerFrame = requestAnimationFrame(() => {
-        const bounds = scene.getBoundingClientRect();
-        const x = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2));
-        const y = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - 0.5) * 2));
-        stage.style.setProperty('--tilt-x', `${(x * 5).toFixed(2)}deg`);
-        stage.style.setProperty('--tilt-y', `${(-y * 4).toFixed(2)}deg`);
-        pointerFrame = 0;
-      });
+  // Disclosure toggles change the page height even when the visitor stays still.
+  document.addEventListener('toggle', event => { if (event.target.matches('details')) scheduleScroll(); }, true);
+
+  const tiltStage = one('[data-tilt]');
+  const tiltScene = tiltStage.closest('.hero-art');
+  const canTilt = window.matchMedia('(min-width: 741px) and (hover: hover) and (pointer: fine)');
+  let pointerFrame = 0;
+  let pointer;
+  function resetTilt() {
+    cancelAnimationFrame(pointerFrame);
+    pointerFrame = 0;
+    tiltStage.style.removeProperty('--tilt-x');
+    tiltStage.style.removeProperty('--tilt-y');
+  }
+  tiltScene.addEventListener('pointermove', event => {
+    if (!motionAllowed() || !canTilt.matches || event.pointerType !== 'mouse') return;
+    pointer = event;
+    if (pointerFrame) return;
+    pointerFrame = requestAnimationFrame(() => {
+      const bounds = tiltScene.getBoundingClientRect();
+      const offset = (point, start, size) => Math.max(-1, Math.min(1, (point - start) / size * 2 - 1));
+      tiltStage.style.setProperty('--tilt-x', `${offset(pointer.clientX, bounds.left, bounds.width) * 3}deg`);
+      tiltStage.style.setProperty('--tilt-y', `${offset(pointer.clientY, bounds.top, bounds.height) * -2.2}deg`);
+      pointerFrame = 0;
     });
-    stage.addEventListener('pointerleave', () => { if (pointerFrame) cancelAnimationFrame(pointerFrame); pointerFrame = 0; stage.style.setProperty('--tilt-x', '0deg'); stage.style.setProperty('--tilt-y', '0deg'); });
+  }, { passive: true });
+  tiltScene.addEventListener('pointerleave', resetTilt);
+  canTilt.addEventListener('change', resetTilt);
+  window.addEventListener('blur', resetTilt);
+  document.addEventListener('visibilitychange', () => {
+    root.classList.toggle('tab-hidden', document.hidden);
+    if (document.hidden) resetTilt();
   });
 
   const serviceTabs = all('[data-service]');
+  const servicePanels = one('.service-panels');
+  servicePanels.classList.add('is-enhanced');
+  servicePanels.addEventListener('animationend', event => {
+    if (event.target.matches('.service-visual')) servicePanels.classList.remove('is-switching');
+  });
+  let activeService = 'web';
   function selectService(name, focus = false) {
+    if (name !== activeService) servicePanels.classList.toggle('is-switching', motionAllowed());
+    activeService = name;
     serviceTabs.forEach(button => {
       const active = button.dataset.service === name;
       button.classList.toggle('is-active', active);
@@ -158,6 +205,21 @@
       </style></head><body><div class="notice">${label}</div><section class="hero"><img src="${image}" alt="${es ? 'Fotografía conceptual de arquitectura y exteriores' : 'Concept photography of architecture and outdoor spaces'}"><div class="shade"></div><nav><a class="brand" href="#">${brand}</a><div class="nav-links"><a href="#about">${es ? 'Nosotros' : 'Our approach'}</a><a href="#projects">${es ? 'Proyectos' : 'The work'}</a></div></nav><div class="copy"><p class="eyebrow">${isLandscape ? 'LANDSCAPE / OUTDOOR LIVING' : 'CONCRETE / REMODELING / CRAFT'}</p><h1>${title}</h1><a class="cta" href="#projects">${es ? 'Explora los proyectos' : 'Explore the work'} <span>↗</span></a></div></section><section class="intro" id="about"><h2>${intro}</h2><p>${body}</p></section><div class="features">${featureNames.map((name, index) => `<article class="feature"><small>0${index + 1} /</small><h3>${name}</h3><p>${es ? 'Un espacio claro para explicar este servicio y ayudar al cliente a entender lo que ofreces.' : 'A clear place to explain this service and help customers understand what you offer.'}</p></article>`).join('')}</div><section class="projects" id="projects"><p class="eyebrow">${es ? 'UNA NUEVA PERSPECTIVA / IMÁGENES DE CONCEPTO' : 'A FRESH PERSPECTIVE / CONCEPT IMAGERY'}</p><div class="project-grid"><figure><img src="${image}" alt="${es ? 'Imagen conceptual del diseño principal' : 'Main design concept image'}"><figcaption>${es ? 'Espacios bien pensados.' : 'Spaces, considered.'}</figcaption></figure><figure><img src="${secondaryImage}" alt="${es ? 'Imagen conceptual de materiales y arquitectura' : 'Concept image of materials and architecture'}"><figcaption>${es ? 'Los detalles hacen la diferencia.' : 'The details make the difference.'}</figcaption></figure></div></section><section class="closing"><h2>${es ? 'Tu visión.<br><em>Bien presentada.</em>' : 'Your vision.<br><em>Beautifully presented.</em>'}</h2><p>${es ? 'Esto es una propuesta de diseño. Usa el enlace debajo de esta vista para platicar de tu propia página web.' : 'This is an illustrative design direction. Use the link below this preview to talk about your own website.'}</p><a class="cta" href="#">${es ? 'Volver al inicio ↑' : 'Back to the top ↑'}</a></section><footer><span>${brand} / ${es ? 'CONCEPTO DE DISEÑO' : 'DESIGN CONCEPT'}</span><span>DESIGN BY SCALEX ADS</span></footer></body></html>`;
   }
 
+  function syncConceptMotion() {
+    const frameRoot = conceptFrame.contentDocument?.documentElement;
+    if (frameRoot) frameRoot.style.scrollBehavior = motionAllowed() ? '' : 'auto';
+  }
+  conceptFrame.addEventListener('load', () => {
+    syncConceptMotion();
+    // Escape in the iframe does not reach the parent dialog's native handler.
+    conceptFrame.contentDocument?.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && conceptDialog.open) {
+        event.preventDefault();
+        conceptDialog.close();
+      }
+    });
+  });
+
   function renderConcept(project) {
     currentProject = project === 'landscape' ? 'landscape' : 'concrete';
     one('#concept-dialog-title').textContent = currentProject === 'landscape' ? (language === 'es' ? 'FIELDWORK / Jardinería' : 'FIELDWORK / Landscaping') : (language === 'es' ? 'FORM / Concreto y construcción' : 'FORM / Concrete & construction');
@@ -173,14 +235,30 @@
     document.body.style.overflow = 'hidden';
   }));
   one('#concept-close').addEventListener('click', () => conceptDialog.close());
-  conceptDialog.addEventListener('close', () => { document.body.style.overflow = menu.open ? 'hidden' : ''; if (conceptOpener) conceptOpener.focus({ preventScroll: true }); });
+  conceptDialog.addEventListener('close', () => {
+    previewAnimation?.cancel();
+    document.body.style.overflow = menu.open ? 'hidden' : '';
+    conceptOpener?.focus({ preventScroll: true });
+  });
   conceptDialog.addEventListener('click', event => { if (event.target !== conceptDialog) return; const rect = conceptDialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) conceptDialog.close(); });
   all('[data-preview-size]').forEach(button => button.addEventListener('click', () => {
+    if (button.getAttribute('aria-pressed') === 'true') return;
     conceptFrame.classList.toggle('is-mobile', button.dataset.previewSize === 'mobile');
     all('[data-preview-size]').forEach(control => control.setAttribute('aria-pressed', String(control === button)));
+    previewAnimation?.cancel();
+    if (motionAllowed()) {
+      previewAnimation = conceptFrame.animate([{ opacity: 0.65 }, { opacity: 1 }], {
+        duration: 240,
+        easing: 'cubic-bezier(.22,1,.36,1)'
+      });
+    }
   }));
 
   one('#year').textContent = new Date().getFullYear();
   applyLanguage(language);
-  updateScroll();
+  initReveals();
+  if (motionAllowed() && window.scrollY === 0 && (!location.hash || location.hash === '#home')) {
+    hero.classList.add('is-entering');
+    one('[data-hero-enter="caption"]').addEventListener('animationend', () => hero.classList.remove('is-entering'), { once: true });
+  }
 })();
